@@ -1,0 +1,569 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Deer Score Calculator</title>
+<meta name="description" content="Deer hunters calculate the gross antler score and see what your net score is after deductions using Whitetail Deer Score Calculator">
+<meta name="keywords" content="Whitetail Deer Score Calculator, gross antler score, net score, whitetail deer scorechart, whitetail deer, coues deer, coues, whitetail, hunters, deer hunters, antler score, deer score calculator, rack, deer rack, deer, Net score of a whitetail buck, whitetail buck, buck, gross antler score, net score after deductions, gross score of the antlers, scorable abnormal points, scorable points, abnormal points, points, deer points, Scoring whitetail deer, How to score a buck, scoring deer, main beams of the antlers, inside spread of the main beams, spread credit, buck antlers, main beam, antler point, antler, deer antlers,long tines, tines, burr, antler tip,  ">
+<link rel="SHORTCUT ICON" href="http://www.anycalculator.com/favicon.ico">
+
+
+
+
+
+<SCRIPT language=JavaScript1.2>
+
+function isEmpty(field) {
+	if ((field.value == "") || (field.value == null)) {
+		return true
+	}
+	return false;
+}
+
+// function to determine if value is in acceptable range for this application
+
+function inRange(field, lo, hi) {
+	var num = parseInt(field.value)
+	if (num < parseInt(lo) || num > parseInt(hi)) {
+		return false
+	}
+	return true;
+}
+
+// **END GENERIC VALIDATION FUNCTIONS**
+
+function validateInput(field,lo,hi) {
+	var input = parseInt(field.value)
+	if (isNaN(input)) {
+			alert("Entries must be numbers only.")
+			select(field)
+			return false
+	}else if (!inRange(input,lo,hi)) {
+				alert("Enter a number between " + lo + " and " + hi + ".")
+				select(field)
+				return false
+	}
+	return true;
+}
+
+function select(field) {
+	field.focus();
+	field.select();
+}
+
+function messag(messnum) {
+messArray = new Array(8);
+messArray[0] = "A. Number of Points on Each Antler: To be counted a point, the projection must be at least one inch long, with the length exceeding width at one inch or more of length. All points are measured from tip of point to nearest edge of beam as illustrated. Beam tip is counted as a point but not measured as a point. (Visit ParrotNewsReport.com for the latest hunting news.)";
+messArray[1] = "B. Tip to Tip Spread is measured between tips of main beams.(Visit ParrotNewsReport.com for the latest hunting news.) "
+messArray[2] = "C. Greatest Spread is measured between perpendiculars at a right angle to the center line of the skull at widest part, whether across main beams or points.(Visit ParrotNewsReport.com for the latest hunting news.) ";
+messArray[3] = "D. Inside Spread of Main Beams is measured at a right angle to the center line of the skull at widest point between main beams. (If it is less than or equal to the length of the longer antler this number will be use for Spread Credit below; if greater, the longer antler length will be used for Spread Credit. (Visit ParrotNewsReport.com for the latest hunting news.)";
+messArray[4] = "E. Total of Lengths of all Abnormal Points: Abnormal Points are those non-typical in location (such as points originating from a point or from bottom or sides of main beam) or extra points beyond the normal pattern of points. Measure in usual manner and enter in appropriate blanks. (Visit ParrotNewsReport.com for the latest hunting news.)";
+messArray[5] = "F. Length of Main Beam is measured from the center of the lowest outside edge of burr over the outer side to the most distant point of the main beam. The point of beginning is that point on the burr where the center line along the outer side of the beam intersects the burr, then following generally the line of the illustration. (Visit ParrotNewsReport.com for the latest hunting news.)";
+messArray[6] = "G-1-2-3-4-5-6-7. Length of Normal Points: Normal points project from the top of the main beam. They are measured from nearest edge of main beam over outer curve to tip. Lay the tape along the outer curve of the beam so that the top edge of the tape coincides with the top edge of the beam on both sides of the point to determine the baseline for point measure- ments. Record point lengths in appropriate blanks.(Visit ParrotNewsReport.com for the latest hunting news.) ";
+messArray[7] = "H-1-2-3-4. Circumferences are taken as detailed in illustration for each measurement. If brow point is missing, take H-1 and H-2 at smallest place between burr and G-2. If G-4 is missing, take H-4 halfway between G-3 and tip of main beam. (Visit ParrotNewsReport.com for the latest hunting news.)";
+
+	alert( messArray[parseInt(messnum)-1] )
+}
+
+
+function fractToFloat(field,field1,field2){
+		if (isEmpty(field) && isEmpty(field1) && isEmpty(field2)){
+			return 0;
+		}else if (!isEmpty(field1) && isEmpty(field2)){
+			alert("Only Numerator has an entry");
+			select(field1);
+			return 0;
+		}else if (isEmpty(field1) && !isEmpty(field2)){
+			alert("Only denominator has an entry");
+			select(field2);
+			return 0;
+		}else if (!isEmpty(field) && isEmpty(field1) && isEmpty(field2)){
+			if (validateInput(field,0,64)){
+				return parseFloat(field.value);
+			}
+		}else if (!isEmpty(field) && !isEmpty(field1) && !isEmpty(field2)){
+			if (validateInput(field,0,64) && validateInput(field1,0,64) && validateInput(field2,0,64)){
+				if (parseInt(field2.value) != 0){
+					return (parseFloat(field.value) + parseFloat(field1.value)/parseFloat(field2.value));
+				}else{
+					alert("Error - Denominator is zero");
+					select(field2);
+					return 0;
+				}					
+			}
+		}else if (isEmpty(field) && !isEmpty(field1) && !isEmpty(field2)){
+			if (validateInput(field1,0,64) && validateInput(field2,0,64)){
+				if (parseInt(field2.value) != 0){
+					return (parseFloat(field1.value)/parseFloat(field2.value));
+				}else{
+					alert("Error - Denominator is zero");
+					select(field2);
+					return 0;
+				}					
+			}
+		}
+		return 0;
+}
+
+function valueToFloat(field){
+	if(validateInput(field,0,64)){
+			return parseFloat(field.value);
+	}else {return 0;}
+}
+
+
+function calcResult(form) {
+
+var APRtotal = 0;
+var APLtotal = 0;
+var G13COL2total = 0;
+var G13COL3total = 0;
+var G47COL2total = 0;
+var G47COL3total = 0;
+var H14COL2total = 0;
+var H14COL3total = 0;
+
+var MBdiff = 0;
+var G1diff = 0;
+var G2diff = 0;
+var G3diff = 0;
+var G4diff = 0;
+var G5diff = 0;
+var G6diff = 0;
+var G7diff = 0;
+var H1diff = 0;
+var H2diff = 0;
+var H3diff = 0;
+var H4diff = 0;
+
+var LongerAntler;
+var tmpTotal;
+var RA;
+var LA;
+
+RA = valueToFloat(form.RApts);
+LA = valueToFloat(form.LApts);
+APRtotal = fractToFloat(form.APRA1,form.APRA11,form.APRA12) + fractToFloat(form.APRA2,form.APRA21,form.APRA22) + fractToFloat(form.APRA3,form.APRA31,form.APRA32) + fractToFloat(form.APRA4,form.APRA41,form.APRA42) + fractToFloat(form.APRA5,form.APRA51,form.APRA52);
+APLtotal = fractToFloat(form.APLA1,form.APLA11,form.APLA12) + fractToFloat(form.APLA2,form.APLA21,form.APLA22) + fractToFloat(form.APLA3,form.APLA31,form.APLA32) + fractToFloat(form.APLA4,form.APLA41,form.APLA42) + fractToFloat(form.APLA5,form.APLA51,form.APLA52);
+form.APtot.value = APRtotal + APLtotal;
+
+form.COL1total.value = fractToFloat(form.IDSpread,form.IDSpread1,form.IDSpread2);
+
+G13COL2total = fractToFloat(form.LMBRA,form.LMBRA1,form.LMBRA2) + fractToFloat(form.L1PRA,form.L1PRA1,form.L1PRA2) + fractToFloat(form.L2PRA,form.L2PRA1,form.L2PRA2) + fractToFloat(form.L3PRA,form.L3PRA1,form.L3PRA2);
+G13COL3total = fractToFloat(form.LMBLA,form.LMBLA1,form.LMBLA2) + fractToFloat(form.L1PLA,form.L1PLA1,form.L1PLA2) + fractToFloat(form.L2PLA,form.L2PLA1,form.L2PLA2) + fractToFloat(form.L3PLA,form.L3PLA1,form.L3PLA2);
+G47COL2total = fractToFloat(form.L4PRA,form.L4PRA1,form.L4PRA2) + fractToFloat(form.L5PRA,form.L5PRA1,form.L5PRA2) + fractToFloat(form.L6PRA,form.L6PRA1,form.L6PRA2) + fractToFloat(form.L7PRA,form.L7PRA1,form.L7PRA2);
+G47COL3total = fractToFloat(form.L4PLA,form.L4PLA1,form.L4PLA2) + fractToFloat(form.L5PLA,form.L5PLA1,form.L5PLA2) + fractToFloat(form.L6PLA,form.L6PLA1,form.L6PLA2) + fractToFloat(form.L7PLA,form.L7PLA1,form.L7PLA2);
+H14COL2total = fractToFloat(form.C1PRA,form.C1PRA1,form.C1PRA2) + fractToFloat(form.C2PRA,form.C2PRA1,form.C2PRA2) + fractToFloat(form.C3PRA,form.C3PRA1,form.C3PRA2) + fractToFloat(form.C4PRA,form.C4PRA1,form.C4PRA2);
+H14COL3total = fractToFloat(form.C1PLA,form.C1PLA1,form.C1PLA2) + fractToFloat(form.C2PLA,form.C2PLA1,form.C2PLA2) + fractToFloat(form.C3PLA,form.C3PLA1,form.C3PLA2) + fractToFloat(form.C4PLA,form.C4PLA1,form.C4PLA2);
+
+LongerAntler = (fractToFloat(form.LMBRA,form.LMBRA1,form.LMBRA2) > fractToFloat(form.LMBLA,form.LMBLA1,form.LMBLA2)) ? fractToFloat(form.LMBRA,form.LMBRA1,form.LMBRA2) : fractToFloat(form.LMBLA,form.LMBLA1,form.LMBLA2); 
+form.limitbox.checked = (parseFloat(form.COL1total.value) > parseFloat(LongerAntler)) ? true : false;
+form.COL1total.value = (parseFloat(form.COL1total.value) > parseFloat(LongerAntler)) ? LongerAntler : form.COL1total.value;
+form.COL2total.value = parseFloat(G13COL2total) + parseFloat(G47COL2total) + parseFloat(H14COL2total);
+form.COL3total.value = parseFloat(G13COL3total) + parseFloat(G47COL3total) + parseFloat(H14COL3total);
+
+MBdiff = Math.abs(fractToFloat(form.LMBRA,form.LMBRA1,form.LMBRA2) - fractToFloat(form.LMBLA,form.LMBLA1,form.LMBLA2));
+G1diff = Math.abs(fractToFloat(form.L1PRA,form.L1PRA1,form.L1PRA2) - fractToFloat(form.L1PLA,form.L1PLA1,form.L1PLA2));
+G2diff = Math.abs(fractToFloat(form.L2PRA,form.L2PRA1,form.L2PRA2) - fractToFloat(form.L2PLA,form.L2PLA1,form.L2PLA2));
+G3diff = Math.abs(fractToFloat(form.L3PRA,form.L3PRA1,form.L3PRA2) - fractToFloat(form.L3PLA,form.L3PLA1,form.L3PLA2));
+G4diff = Math.abs(fractToFloat(form.L4PRA,form.L4PRA1,form.L4PRA2) - fractToFloat(form.L4PLA,form.L4PLA1,form.L4PLA2));
+G5diff = Math.abs(fractToFloat(form.L5PRA,form.L5PRA1,form.L5PRA2) - fractToFloat(form.L5PLA,form.L5PLA1,form.L5PLA2));
+G6diff = Math.abs(fractToFloat(form.L6PRA,form.L6PRA1,form.L6PRA2) - fractToFloat(form.L6PLA,form.L6PLA1,form.L6PLA2));
+G7diff = Math.abs(fractToFloat(form.L7PRA,form.L7PRA1,form.L7PRA2) - fractToFloat(form.L7PLA,form.L7PLA1,form.L7PLA2));
+H1diff = Math.abs(fractToFloat(form.C1PRA,form.C1PRA1,form.C1PRA2) - fractToFloat(form.C1PLA,form.C1PLA1,form.C1PLA2));
+H2diff = Math.abs(fractToFloat(form.C2PRA,form.C2PRA1,form.C2PRA2) - fractToFloat(form.C2PLA,form.C2PLA1,form.C2PLA2));
+H3diff = Math.abs(fractToFloat(form.C3PRA,form.C3PRA1,form.C3PRA2) - fractToFloat(form.C3PLA,form.C3PLA1,form.C3PLA2));
+H4diff = Math.abs(fractToFloat(form.C4PRA,form.C4PRA1,form.C4PRA2) - fractToFloat(form.C4PLA,form.C4PLA1,form.C4PLA2));
+
+form.LMBdiff.value = MBdiff;
+form.L1Pdiff.value = G1diff;
+form.L2Pdiff.value = G2diff;
+form.L3Pdiff.value = G3diff;
+form.L4Pdiff.value = G4diff;
+form.L5Pdiff.value = G5diff;
+form.L6Pdiff.value = G6diff;
+form.L7Pdiff.value = G7diff;
+form.C1Pdiff.value = H1diff;
+form.C2Pdiff.value = H2diff;
+form.C3Pdiff.value = H3diff;
+form.C4Pdiff.value = H4diff;
+
+form.COL4total.value = parseFloat(form.APtot.value) + parseFloat(MBdiff) + parseFloat(G1diff) + parseFloat(G2diff) + parseFloat(G3diff) + parseFloat(G4diff) + parseFloat(G5diff) + parseFloat(G6diff) + parseFloat(G7diff) + parseFloat(H1diff) + parseFloat(H2diff) + parseFloat(H3diff) + parseFloat(H4diff);
+form.ADDCOL123.value = parseFloat(form.COL1total.value) + parseFloat(form.COL2total.value) + parseFloat(form.COL3total.value);
+form.SUBCOL4.value = -1 * form.COL4total.value;
+form.FINALSCORE.value =  parseFloat(form.ADDCOL123.value) + parseFloat(form.SUBCOL4.value);
+
+tmpTotal = parseFloat(form.FINALSCORE.value) - parseInt(form.FINALSCORE.value);
+form.Total.value = parseInt(form.FINALSCORE.value);
+
+if ((parseFloat((tmpTotal) > 0) && parseFloat(tmpTotal) < 0.0625)){
+	form.Total1.value = "";
+	form.Total2.value = "";
+	} else if ((parseFloat(tmpTotal) > 0.0624) && (parseFloat(tmpTotal) < 0.1875)){
+	form.Total1.value = 1;
+	form.Total2.value = 8;
+	} else if ((parseFloat(tmpTotal) > 0.1874) && (parseFloat(tmpTotal) < 0.3125)){
+	form.Total1.value = 1;
+	form.Total2.value = 4;
+	} else if ((parseFloat(tmpTotal) > 0.3124) && (parseFloat(tmpTotal) < 0.4375)){
+	form.Total1.value = 3;
+	form.Total2.value = 8;
+	} else if ((parseFloat(tmpTotal) > 0.4374) && (parseFloat(tmpTotal) < 0.5625)){
+	form.Total1.value = 1;
+	form.Total2.value = 2;
+	} else if ((parseFloat(tmpTotal) > 0.5624) && (parseFloat(tmpTotal) < 0.6875)){
+	form.Total1.value = 5;
+	form.Total2.value = 8;
+	} else if ((parseFloat(tmpTotal) > 0.6874) && (parseFloat(tmpTotal) < 0.8125)){
+	form.Total1.value = 3;
+	form.Total2.value = 4;
+	} else if ((parseFloat(tmpTotal) > 0.8124) && (parseFloat(tmpTotal) < 0.9375)){
+	form.Total1.value = 7;
+	form.Total2.value = 8;
+	} else if (parseFloat(tmpTotal) > 0.9374){
+	form.Total1.value = " ";
+	form.Total2.value = " ";
+	form.Total.value = parseInt(form.Total.value) + 1;
+	}else {return 0;} 
+}
+
+
+//-->
+</SCRIPT>
+
+
+
+
+
+</head>
+
+
+
+<body>
+
+<hr />
+
+<center> <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- pizza tip -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-3533295204976012"
+     data-ad-slot="8634567687"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script> </center>
+<hr />
+<center>
+  <p>Deer hunters calculate the gross antler score and see what your net score is after deductions using Whitetail Deer Score Calculator.</p></center>
+
+<TABLE cellSpacing=0 cellPadding=2 width="100%" border=1>
+<TBODY>
+<BR>
+<TR>
+<TD width="100%">
+<P align=center><B>TYPICAL WHITETAIL  DEER SCORECHART&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="https://streamzones.com">StreamZones.com</a></B></P></TD></TR>
+<TR>
+<TD width="100%">
+<P align=center>&nbsp;&nbsp;<img height=179 alt="" src="http://anycalculator.com/deer.jpg" width=449 /></P></TD></TR>
+<TR>
+<TD width="100%">
+<P align=center><font size="2" face="Verdana,Arial, Helvetica"><B>INSTRUCTIONS FOR MEASURING TYPICAL WHITETAIL AND COUES' DEER<br />
+(The Coues, is a subspecies of the white-tailed deer. Common in Arizona's southeastern mountains.)</B></font></P><FONT face="Verdana,Arial, Helvetica" size=2>
+<P align=left><B>All measurements must be made with a 1/4-inch wide flexible steel tape to the nearest one-eighth of an inch. (Note: A flexible steel cable can be used to measure points and main beams only.) Enter fractional figures in eighths, without reducing. Official measurements should not be taken until the antlers have air dried for at least 60 days after the deer was killed. </B></P></FONT></TD></TR></TBODY></TABLE>
+<FORM name=form align="center" width="100%">
+<DIV align=center width="100%">
+<DIV align=center>
+<CENTER>
+<TABLE cellSpacing=0 cellPadding=2 width="100%" border=1>
+<TBODY>
+<TR>
+<TD align=left width="32%">&nbsp;&nbsp;<FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>Enter measurement 32 1/8" as</B></STRONG></FONT></TD>
+<TD align=middle width="19%"><STRONG><FONT face="Verdana,Arial, Helvetica" size=1><B>Spread Credit</B></FONT></STRONG></TD>
+<TD align=middle width="19%"><STRONG><FONT face="Verdana,Arial, Helvetica" size=1><B>Right Antler</B></FONT></STRONG></TD>
+<TD align=middle width="18%"><STRONG><FONT face="Verdana,Arial, Helvetica" size=1><B>Left Antler </B></FONT></STRONG></TD>
+<TD align=middle width="12%"><FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>Deductions</B></STRONG></FONT></TD></TR>
+<TR>
+<TD align=left width="32%">&nbsp;&nbsp;<INPUT size=3 value=32 name=garbage>&nbsp;&nbsp;<INPUT size=2 value=1 name=garbage2>/<INPUT size=2 value=8 name=garbage3></TD>
+<TD align=middle width="19%">&nbsp;</TD>
+<TD align=middle width="19%">&nbsp;</TD>
+<TD align=middle width="18%">&nbsp;</TD>
+<TD width="12%">
+<DIV align=center>
+<CENTER>
+<P>&nbsp;</P></CENTER></DIV></TD></TR>
+<TR align=middle>
+<TD align=left width="32%"><FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>A. <A onclick=messag(1) href="javascript:void(0)">Number of Points on Antlers</A></B></STRONG></FONT></TD>
+<TD align=left width="19%">&nbsp;&nbsp;&nbsp;&nbsp; </TD>
+<TD align=middle width="19%"><INPUT size=7 name=RApts>&nbsp;&nbsp;</TD>
+<TD align=middle width="18%">&nbsp;&nbsp;<INPUT size=7 name=LApts></TD>
+<TD width="12%">&nbsp;&nbsp;</TD></TR>
+<TR align=middle>
+<TD align=left width="32%"><FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>B. <A onclick=messag(2) href="javascript:void(0)">Tip to Tip Spread</A></B></STRONG></FONT></TD>
+<TD align=middle width="19%"><INPUT size=3 name=TTSpread>&nbsp;&nbsp;<INPUT size=2 name=TTSpread1>/<INPUT size=2 name=TTSpread2></TD>
+<TD align=middle width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="18%">&nbsp;&nbsp;</TD>
+<TD width="12%">&nbsp;&nbsp;</TD></TR>
+<TR align=middle>
+<TD align=left width="32%"><FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>C. <A onclick=messag(3) href="javascript:void(0)">Greatest Spread of Main Beams</A> </B></STRONG></FONT></TD>
+<TD align=middle width="19%"><INPUT size=3 name=ODSpread>&nbsp;&nbsp;<INPUT size=2 name=ODSpread1>/<INPUT size=2 name=ODSpread2></TD>
+<TD align=middle width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="18%">&nbsp;&nbsp;</TD>
+<TD width="12%">&nbsp;&nbsp;</TD></TR>
+<TR>
+<TD align=left width="32%"><FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>&nbsp;&nbsp;&nbsp; Scoring Measurements</B></STRONG></FONT></TD>
+<TD align=middle width="19%">&nbsp;</TD>
+<TD align=middle width="19%">&nbsp;</TD>
+<TD align=middle width="18%">&nbsp;</TD>
+<TD width="12%">&nbsp;</TD></TR>
+<TR align=middle>
+<TD align=left width="32%"><STRONG><B><FONT face="Verdana,Arial, Helvetica" size=1>D. </FONT><FONT face="Verdana,Arial, Helvetica" size=1><A onclick=messag(4) href="javascript:void(0)">Inside Spread of Main Beams</A> </FONT></B></STRONG></TD>
+<TD align=middle width="19%"><INPUT size=3 name=IDSpread>&nbsp;&nbsp;<INPUT size=2 name=IDSpread1>/<INPUT size=2 name=IDSpread2></TD>
+<TD align=middle width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="18%">&nbsp;&nbsp;</TD>
+<TD width="12%">&nbsp;&nbsp;</TD></TR>
+<TR align=middle>
+<TD align=left width="32%"><STRONG><B><FONT face="Verdana,Arial, Helvetica" size=1>E. </FONT><FONT face="Verdana,Arial, Helvetica" size=1><A onclick=messag(5) href="javascript:void(0)">Lengths of Abnormal Points</A></FONT></B></STRONG></TD>
+<TD align=right width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="19%"><INPUT size=3 name=APRA1>&nbsp;&nbsp;<INPUT size=2 name=APRA11>/<INPUT size=2 name=APRA12></TD>
+<TD align=middle width="18%"><INPUT size=3 name=APLA1>&nbsp;&nbsp;<INPUT size=2 name=APLA11>/<INPUT size=2 name=APLA12></TD>
+<TD width="12%">&nbsp;&nbsp;</TD></TR>
+<TR align=middle>
+<TD align=left width="32%">&nbsp;&nbsp;</TD>
+<TD align=right width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="19%"><INPUT size=3 name=APRA2>&nbsp;&nbsp;<INPUT size=2 name=APRA21>/<INPUT size=2 name=APRA22></TD>
+<TD align=middle width="18%"><INPUT size=3 name=APLA2>&nbsp;&nbsp;<INPUT size=2 name=APLA21>/<INPUT size=2 name=APLA22></TD>
+<TD width="12%">&nbsp;&nbsp;</TD></TR>
+<TR align=middle>
+<TD align=left width="32%">&nbsp;&nbsp;</TD>
+<TD align=right width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="19%"><INPUT size=3 name=APRA3>&nbsp;&nbsp;<INPUT size=2 name=APRA31>/<INPUT size=2 name=APRA32></TD>
+<TD align=middle width="18%"><INPUT size=3 name=APLA3>&nbsp;&nbsp;<INPUT size=2 name=APLA31>/<INPUT size=2 name=APLA32></TD>
+<TD width="12%">&nbsp;&nbsp;</TD></TR>
+<TR align=middle>
+<TD align=left width="32%">&nbsp;&nbsp;</TD>
+<TD align=right width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="19%"><INPUT size=3 name=APRA4>&nbsp;&nbsp;<INPUT size=2 name=APRA41>/<INPUT size=2 name=APRA42></TD>
+<TD align=middle width="18%"><INPUT size=3 name=APLA4>&nbsp;&nbsp;<INPUT size=2 name=APLA41>/<INPUT size=2 name=APLA42></TD>
+<TD width="12%">&nbsp;&nbsp;</TD></TR>
+<TR align=middle>
+<TD align=left width="32%">&nbsp;&nbsp;</TD>
+<TD align=right width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="19%"><INPUT size=3 name=APRA5>&nbsp;&nbsp;<INPUT size=2 name=APRA51>/<INPUT size=2 name=APRA52></TD>
+<TD align=middle width="18%"><INPUT size=3 name=APLA5>&nbsp;&nbsp;<INPUT size=2 name=APLA51>/<INPUT size=2 name=APLA52></TD>
+<TD width="12%">&nbsp;&nbsp;</TD></TR>
+<TR align=middle>
+<TD align=left width="32%">
+<DIV align=left>
+<P><FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>Abnormal PointsTotal:</B></STRONG></FONT> </P></DIV></TD>
+<TD width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="18%">&nbsp;&nbsp;</TD>
+<TD align=middle width="12%"><INPUT size=7 name=APtot></TD></TR>
+<TR align=middle>
+<TD align=left width="32%"><FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>F. <A onclick=messag(6) href="javascript:void(0)">Length of Main Beam</A> </B></STRONG></FONT></TD>
+<TD width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="19%"><INPUT size=3 name=LMBRA>&nbsp;&nbsp;<INPUT size=2 name=LMBRA1>/<INPUT size=2 name=LMBRA2></TD>
+<TD align=middle width="18%"><INPUT size=3 name=LMBLA>&nbsp;&nbsp;<INPUT size=2 name=LMBLA1>/<INPUT size=2 name=LMBLA2></TD>
+<TD align=middle width="12%"><INPUT size=7 name=LMBdiff></TD></TR>
+<TR align=middle>
+<TD align=left width="32%"><FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>G1. <A onclick=messag(7) href="javascript:void(0)">Length of First Point</A> </B></STRONG></FONT></TD>
+<TD width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="19%"><INPUT size=3 name=L1PRA>&nbsp;&nbsp;<INPUT size=2 name=L1PRA1>/<INPUT size=2 name=L1PRA2></TD>
+<TD align=middle width="18%"><INPUT size=3 name=L1PLA>&nbsp;&nbsp;<INPUT size=2 name=L1PLA1>/<INPUT size=2 name=L1PLA2></TD>
+<TD align=middle width="12%"><INPUT size=7 name=L1Pdiff></TD></TR>
+<TR align=middle>
+<TD align=left width="32%"><FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>G2. <A onclick=messag(7) href="javascript:void(0)">Length of Second Point </A></B></STRONG></FONT></TD>
+<TD width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="19%"><INPUT size=3 name=L2PRA>&nbsp;&nbsp;<INPUT size=2 name=L2PRA1>/<INPUT size=2 name=L2PRA2></TD>
+<TD align=middle width="18%"><INPUT size=3 name=L2PLA>&nbsp;&nbsp;<INPUT size=2 name=L2PLA1>/<INPUT size=2 name=L2PLA2></TD>
+<TD align=middle width="12%"><INPUT size=7 name=L2Pdiff></TD></TR>
+<TR align=middle>
+<TD align=left width="32%"><FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>G3. <A onclick=messag(7) href="javascript:void(0)">Length of Third Point</A> </B></STRONG></FONT></TD>
+<TD width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="19%"><INPUT size=3 name=L3PRA>&nbsp;&nbsp;<INPUT size=2 name=L3PRA1>/<INPUT size=2 name=L3PRA2></TD>
+<TD align=middle width="18%"><INPUT size=3 name=L3PLA>&nbsp;&nbsp;<INPUT size=2 name=L3PLA1>/<INPUT size=2 name=L3PLA2></TD>
+<TD align=middle width="12%"><INPUT size=7 name=L3Pdiff></TD></TR>
+<TR align=middle>
+<TD align=left width="32%"><FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>G4. <A onclick=messag(7) href="javascript:void(0)">Length of Fourth Point, If Present </A></B></STRONG></FONT></TD>
+<TD width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="19%"><INPUT size=3 name=L4PRA>&nbsp;&nbsp;<INPUT size=2 name=L4PRA1>/<INPUT size=2 name=L4PRA2></TD>
+<TD align=middle width="18%"><INPUT size=3 name=L4PLA>&nbsp;&nbsp;<INPUT size=2 name=L4PLA1>/<INPUT size=2 name=L4PLA2></TD>
+<TD align=middle width="12%"><INPUT size=7 name=L4Pdiff></TD></TR>
+<TR align=middle>
+<TD align=left width="32%"><FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>G5. <A onclick=messag(7) href="javascript:void(0)">Length of Fifth Point, If Present</A>&nbsp; </B></STRONG></FONT></TD>
+<TD width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="19%"><INPUT size=3 name=L5PRA>&nbsp;&nbsp;<INPUT size=2 name=L5PRA1>/<INPUT size=2 name=L5PRA2></TD>
+<TD align=middle width="18%"><INPUT size=3 name=L5PLA>&nbsp;&nbsp;<INPUT size=2 name=L5PLA1>/<INPUT size=2 name=L5PLA2></TD>
+<TD align=middle width="12%"><INPUT size=7 name=L5Pdiff></TD></TR>
+<TR align=middle>
+<TD align=left width="32%"><FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>G6. <A onclick=messag(7) href="javascript:void(0)">Length of Sixth Point, If Present </A></B></STRONG></FONT></TD>
+<TD width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="19%"><INPUT size=3 name=L6PRA>&nbsp;&nbsp;<INPUT size=2 name=L6PRA1>/<INPUT size=2 name=L6PRA2></TD>
+<TD align=middle width="18%"><INPUT size=3 name=L6PLA>&nbsp;&nbsp;<INPUT size=2 name=L6PLA1>/<INPUT size=2 name=L6PLA2></TD>
+<TD align=middle width="12%"><INPUT size=7 name=L6Pdiff></TD></TR>
+<TR align=middle>
+<TD align=left width="32%"><FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>G7. <A onclick=messag(7) href="javascript:void(0)">Length of Seventh Point, If Present</A> </B></STRONG></FONT></TD>
+<TD width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="19%"><INPUT size=3 name=L7PRA>&nbsp;&nbsp;<INPUT size=2 name=L7PRA1>/<INPUT size=2 name=L7PRA2></TD>
+<TD align=middle width="18%"><INPUT size=3 name=L7PLA>&nbsp;&nbsp;<INPUT size=2 name=L7PLA1>/<INPUT size=2 name=L7PLA2></TD>
+<TD align=middle width="12%"><INPUT size=7 name=L7Pdiff></TD></TR>
+<TR align=middle>
+<TD align=left width="32%"><FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>H1. <A onclick=messag(8) href="javascript:void(0)">Circumference at Smallest Place <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Between Burr and First Point </A></B></STRONG></FONT></TD>
+<TD width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="19%"><INPUT size=3 name=C1PRA>&nbsp;&nbsp;<INPUT size=2 name=C1PRA1>/<INPUT size=2 name=C1PRA2></TD>
+<TD align=middle width="18%"><INPUT size=3 name=C1PLA>&nbsp;&nbsp;<INPUT size=2 name=C1PLA1>/<INPUT size=2 name=C1PLA2></TD>
+<TD align=middle width="12%"><INPUT size=7 name=C1Pdiff></TD></TR>
+<TR align=middle>
+<TD align=left width="32%"><FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>H2. <A onclick=messag(8) href="javascript:void(0)">Circumference at Smallest Place<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Between First and Second Points</A> </B></STRONG></FONT></TD>
+<TD width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="19%"><INPUT size=3 name=C2PRA>&nbsp;&nbsp;<INPUT size=2 name=C2PRA1>/<INPUT size=2 name=C2PRA2></TD>
+<TD align=middle width="18%"><INPUT size=3 name=C2PLA>&nbsp;&nbsp;<INPUT size=2 name=C2PLA1>/<INPUT size=2 name=C2PLA2></TD>
+<TD align=middle width="12%"><INPUT size=7 name=C2Pdiff></TD></TR>
+<TR align=middle>
+<TD align=left width="32%"><FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>H3. <A onclick=messag(8) href="javascript:void(0)">Circumference at Smallest Place <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Between Second and Third Points</A> </B></STRONG></FONT></TD>
+<TD width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="19%"><INPUT size=3 name=C3PRA>&nbsp;&nbsp;<INPUT size=2 name=C3PRA1>/<INPUT size=2 name=C3PRA2></TD>
+<TD align=middle width="18%"><INPUT size=3 name=C3PLA>&nbsp;&nbsp;<INPUT size=2 name=C3PLA1>/<INPUT size=2 name=C3PLA2></TD>
+<TD align=middle width="12%"><INPUT size=7 name=C3Pdiff></TD></TR>
+<TR align=middle>
+<TD align=left width="32%"><FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>H4. <A onclick=messag(8) href="javascript:void(0)">Circumference at Smallest Place <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Between Third and Fourth&nbsp;&nbsp; Points</A> </B></STRONG></FONT></TD>
+<TD width="19%">&nbsp;&nbsp;</TD>
+<TD align=middle width="19%"><INPUT size=3 name=C4PRA>&nbsp;&nbsp;<INPUT size=2 name=C4PRA1>/<INPUT size=2 name=C4PRA2></TD>
+<TD align=middle width="18%"><INPUT size=3 name=C4PLA>&nbsp;&nbsp;<INPUT size=2 name=C4PLA1>/<INPUT size=2 name=C4PLA2></TD>
+<TD align=middle width="12%"><INPUT size=7 name=C4Pdiff></TD></TR>
+<TR align=middle>
+<TD width="32%">
+<DIV align=center>
+<CENTER>
+<P><FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>Inside Spread of Main Beams&nbsp; <BR>If Checked, Spread Limit Applied</B></STRONG></FONT><INPUT type=checkbox value=ON name=limitbox></P></CENTER></DIV></TD>
+<TD align=middle width="19%">
+<DIV align=left>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; <INPUT size=9 value=0 name=COL1total></P></DIV></TD>
+<TD align=middle width="19%">&nbsp;&nbsp;&nbsp;&nbsp; <INPUT size=9 value=0 name=COL2total></TD>
+<TD align=middle width="18%">&nbsp;&nbsp;&nbsp;&nbsp; <INPUT size=9 value=0 name=COL3total></TD>
+<TD align=middle width="12%"><INPUT size=9 value=0 name=COL4total></TD></TR>
+<TR align=middle>
+<TD align=right width="32%">&nbsp;&nbsp;<FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>Total of all D, E, F, G, &amp; H&nbsp; Items&nbsp; </B></STRONG></FONT></TD>
+<TD align=middle width="19%">
+<DIV align=left>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; <INPUT size=9 value=0 name=ADDCOL123></P></DIV></TD>
+<TD align=middle width="19%">&nbsp;&nbsp;<FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>Right Antler Total<BR>F, G, &amp; H</B></STRONG></FONT></TD>
+<TD align=middle width="18%">&nbsp;&nbsp;<FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>Left Antler Total <BR>F, G, &amp; H</B></STRONG></FONT></TD>
+<TD align=middle width="12%">&nbsp;&nbsp;<FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>Total<BR>Deductions</B></STRONG></FONT></TD></TR>
+<TR align=middle>
+<TD align=right width="32%">&nbsp;<FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>Subtract Deductions </B></STRONG></FONT>&nbsp;</TD>
+<TD width="19%">
+<DIV align=left>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; <INPUT size=9 value=0 name=SUBCOL4></P></DIV></TD>
+<TD width="19%">
+<DIV align=center>
+<CENTER>
+<P>&nbsp;</P></CENTER></DIV></TD>
+<TD align=middle width="18%">&nbsp;</TD>
+<TD align=middle width="12%">&nbsp;</TD></TR>
+<TR align=middle>
+<TD align=right width="32%"><INPUT onclick=calcResult(this.form) type=button value="CALCULATE SCORE "></TD>
+<TD width="19%">
+<DIV align=left>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; <INPUT size=9 value=0 name=FINALSCORE></P></DIV></TD>
+<TD align=middle width="19%">&nbsp;</TD>
+<TD align=middle width="18%">&nbsp;</TD>
+<TD align=middle width="12%">&nbsp;</TD></TR>
+<TR align=middle>
+<TD align=right width="32%"><FONT face="Verdana,Arial, Helvetica" size=1><STRONG><B>Final Score in Fractions&nbsp; </B></STRONG></FONT></TD>
+<TD width="19%">
+<DIV align=center>
+<CENTER>
+<P><INPUT size=4 name=Total>&nbsp;&nbsp;<INPUT size=2 name=Total1>/<INPUT size=2 name=Total2></P></CENTER></DIV></TD>
+<TD align=middle width="19%">&nbsp;</TD>
+<TD align=middle width="18%">&nbsp;</TD>
+<TD align=middle width="12%">&nbsp;</TD></TR></TBODY></TABLE></CENTER></DIV></DIV>
+<DIV align=center>
+<CENTER>
+
+</FORM>
+<BR>
+<hr />
+
+<center> <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- pizza tip -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-3533295204976012"
+     data-ad-slot="8634567687"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script> </center>
+<hr />
+<p>Net score of a whitetail buck</p>
+
+<p>For most people, this gross antler score is all that you need to see where your deer’s antlers rank. A common phrase is “nets (meaning net score after deductions) are for fishermen”, but if you want to be entered into the record books, deductions will have to be subtracted from the gross score of the antlers. The deductions will be the differences between the left side tines, circumferences and all scorable abnormal points.</p>
+<hr />
+<h2>Scoring whitetail deer – How to score a buck</h2>
+<ol>
+  <li>
+    <h3>Measure the main beams of the antlers</h3>
+    <p>This measurement is taken on the outside edge of each antler,   starting at the base of the burr. From the base of the burr, follow the   outside and center of the main beam all the way to the antler tip.   Record both measurements.</p>
+    
+  </li>
+  <li>
+    <h3>Measure the inside spread of the main beams</h3>
+    <p>This measurement , taken perpendicular to the centerline of the   skull, will be the greatest distance between main beams. This number will be your spread   credit as long as it is not longer than the longest main beam. If it is   longer than the longest main beam of the antlers, the longest beam   measurement will be used as the spread credit. Record the spread credit   of your buck’s antlers.</p>
+    
+  </li>
+  <li>
+    <h3>Take the tine or “G” measurements</h3>
+    <p>These measurements will be numbered for each tine and will start with   a G. On a typical whitetail buck, the G1 will be the brow tine, the G2   (typically the longest G measurement) will be the next tine away from   the skull, the G3 will be the next tine, etc. The last antler point   before the main beam tip is the last G measurement you will record.   Measure the tines by marking a horizontal line where the main beam would   be on the antler point and measuring from that line to the tip of the   tine. Record your measurement for each tine.</p>
+  </li>
+      <hr />
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Pizza Tip Link Ad -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3533295204976012"
+     data-ad-slot="5401899681"
+     data-ad-format="link"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<hr />
+    <li>
+    <h3>Take the circumference or “H” measurements</h3>
+    <p>The H1 measurement will be the smallest circumference between the   burr and the first point. The H2 measurement will be between the   smallest circumference between the first point and the second point.   Continue these measurements until you have recorded four measurements   per side of the antlers. If there is no G4 tine present, the H4 will be   measured at the halfway point between the G3 and the main beam tip.   Record your measurements.</p>
+    
+  </li>
+  <li>
+    <h3>Take a measurement of abnormal points</h3>
+    <p>An abnormal point will count toward the gross score of the antlers   but will be deducted from the total score to reach the net score. An   abnormal point must be at least one inch in length. Measure all abnormal   points and record.</p>
+  </li>
+</ol>
+<h2>Calculate your final score of a whitetail buck.</h2>
+<hr />
+<center><script type="text/javascript">
+google_ad_client = "pub-3533295204976012";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_channel ="";
+//--></script>
+<script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></center>
+<hr />
+<p><a href="http://www.anycalculator.com">Back to  AnyCalculator.com</a>     <a href="http://www.exactweather.com">ExactWeather.com</a>     <a href="http://www.gen1.org">Gen1.org</a>&nbsp; &nbsp;&nbsp; &nbsp;<B><a href="https://streamzones.com">StreamZones.com</a></B></p>
+&nbsp;<hr />
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- storyreportscomments_sidebar_AdSense3_200x200_as -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:200px;height:200px"
+     data-ad-client="ca-pub-3533295204976012"
+     data-ad-slot="8110287683"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<hr />
+<p>Deer hunting is not all about numbers or how many inches of antler a   particular buck’s rack sports. On the vast majority of ranches in Texas   today, bucks in the 170 BC and bigger are non existent. Deer of this   size are occasionally harvested from small acreages where deer certainly   cross several property lines on a daily basis. But most extremely high   scoring bucks are taken from intensively managed ranches, either high   fence or extremely large low fenced ranches, ranches where the majority   of the deer never leave the property or the management plan the ranch   owner has in place. </p>
+<p>To sum it up, deer are hunted for many   reasons. Some deer hunters are just out there for the sheer joy of   spending a few well earned days at deer camp and are happy for a buck,   any buck, and a doe or two for the freezers These guys and gals probably   get more enjoyment from all aspects of the hunt than those that are   strictly ‘head hunters’.</p>
+</body>
+</html>
